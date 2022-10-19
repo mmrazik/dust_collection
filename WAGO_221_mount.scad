@@ -25,7 +25,7 @@ blocks = [5,5];
 // 0 - no mirror, 1 - mirror, rotate so its standing up, and reposition tabs
 // 2 - mirror, rotate so that they are laying flat, and reposition tabs.
 // EDIT THIS
-mirror = 2;
+mirror = 1;
 
 // ////////////////////////////////////////////////
 // Tabs - include or exclude mounting tabs

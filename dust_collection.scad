@@ -21,7 +21,7 @@ cornerradius = 4.0;          // Radius of the corners
        // Those settings are more or less independent from the cover
 height_z     = 65;           // Heigth of the lower part. Total height is this value plus
                              //   the height of the cover
-plate        = 1.4;          // Thickness of the bottom plain
+plate        = 2;          // Thickness of the bottom plain
 
        //Definition size of press-in nuts
 nutdiameter  = 4.0;          // Hole diameter for thermal press-in nut
@@ -100,11 +100,12 @@ module box() {
 module socket() {
     height=5;
     dimensions=50;
+    socket_height=27;
     difference() {
         union() {
             cube([dimensions,dimensions,height], center=true);
             translate([dimensions/2+12.5/2,0,0]) cube([12.5,25,height], center=true);
-            translate([0,0,-socket_height+height/2]) cylinder(h=socket_height, r=44/2+2, center=false);
+            #translate([0,0,-socket_height-height/2]) cylinder(h=socket_height, r=44/2+2, center=false);
         }
         cylinder(h=height, r=44/2, center=true);
         
@@ -113,25 +114,60 @@ module socket() {
         translate([38.2/2,-38.2/2,0]) cylinder(h=height, r=4.1/2, center=true);
         translate([-38.2/2,-38.2/2,0]) cylinder(h=height, r=4.1/2, center=true);
     }
-    socket_height=44;
+    
     
     
 }
 
+module power_supply() {
+    color("black") cube([35, 20.5, 15.5]);
+}
 
-translate([68+20, -26, 5]) rotate([0,90,0]) {
+module insert_cone() {
+    insert_diameter = 4.3;
+    insert_height = 6;  
+      difference() {
+        hull() {
+            cylinder(r=insert_diameter/2+3,h=0.1, center=true);
+            translate([0,0,insert_height-0.1]) cylinder(r=insert_diameter/2+1,h=0.1, center=true);
+        }
+        cylinder(r=insert_diameter/2, h=insert_height*2, center=true);
+    }  
+}
+
+module custom_pcb() {
+    mounting_holes_width = 65.8;
+    mounting_holes_depth = 45.8;
+    
+    //insert_cone();
+    translate([0.65+1.5,0.65+1.5,0]) insert_cone();
+    translate([50-0.65-1.5,0.65+1.5,0]) insert_cone();
+    //translate([0.65+1.5+mounting_holes_depth,0.65+1.5+mounting_holes_width+3,0]) insert_cone();
+
+    
+    color("green") cube([51, 75, 1.2]);
+    translate([15,25,10]) rotate([0,0,90]) pcb(ArduinoNano);
+    translate([47,-10,0]) rotate([0,0,90]) power_supply();
+    //translate([0,65,5]) color("black") rotate([0,90,0]) cylinder(r=4.5, h=45); 
+
+}
+
+wago_ssr_offset = 15;
+
+translate([68+20-0.5, -26, 5]) rotate([0,90,0]) {
     socket();
     translate([0,51,0]) socket();
 }
 
-box();
-rotate([0,0,90]) translate([0,-10,-height_z+35]) ssr_assembly(SSR25DA, M3_cap_screw, 10);
+//box();
+
+rotate([0,0,0]) translate([wago_ssr_offset,25,-height_z+35]) ssr_assembly(SSR25DA, M3_cap_screw, 10);
+rotate([0,0,0]) translate([wago_ssr_offset-44,-30, -height_z/2+22.5+plate]) wago_mount();
 
 
-translate([-45,35,0]) rotate([0,0,0]) pcb(ArduinoNano);
+//translate([-50,35,-20]) rotate([0,0,90]) pcb(ArduinoNano);
+translate([-100+wago_ssr_offset+5,-30,-30]) custom_pcb(); 
 rotate([0,90,0]) led(LED5mm, "green");
 rotate([0,0,90]) led(LED5mm, "red");
 
 
-
-translate([-50,-60,0]) rotate([0,0,90]) #wago_mount();
