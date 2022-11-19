@@ -30,9 +30,9 @@ mirror = 1;
 // ////////////////////////////////////////////////
 // Tabs - include or exclude mounting tabs
 // EDIT THIS: 0 - no tabs, 1 - tabs
-tabs = 0;
+tabs = 1;
 // EDIT THIS: radius of hole in tab
-tabradius = 2.6;
+tabradius = 1.8;
 // EDIT THIS: thickness of tab
 tabheight = 4;
 // EDIT THIS: Set width and length of the tab. (tab is basically a square)
@@ -184,3 +184,4 @@ if (mirror==0) { // No mirror. Single row of blocks
 
 
 }
+//wago_mount();
